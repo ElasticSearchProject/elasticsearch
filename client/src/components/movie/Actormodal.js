@@ -7,10 +7,10 @@ import {
   ImageList,
   ImageListItem,
 } from '@mui/material';
-import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import axios from 'axios';
 
 const CustomImageList = styled(ImageList)`
   padding: 1rem;
@@ -57,16 +57,18 @@ const CustomBox = styled(Box)`
   overflow-y: auto;
 `;
 
-function ActorModal({ actorName }, { movie }) {
-  /**const id = useParams();*/
+function ActorModal({ actor }) {
   const [open, setOpen] = useState(false);
-
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   return (
     <div style={{ display: 'flex' }}>
       <Box>
-        <Button onClick={handleOpen}>{actorName.name}</Button>
+        {actor.map((actorName, part) => (
+          <Button onClick={handleOpen} key={part}>
+            {actorName.name}
+          </Button>
+        ))}
       </Box>
       <Modal
         open={open}
@@ -76,7 +78,7 @@ function ActorModal({ actorName }, { movie }) {
       >
         <CustomBox>
           <CustomContainer>
-            <Typography variant="h6">{actorName.name}의 다른 작품</Typography>
+            <Typography variant="h6">{actor.name}의 다른 작품</Typography>
           </CustomContainer>
           <CustomImageList cols={5} rowHeight={220}>
             {[1, 2, 3, 4, 5].map(item => (
@@ -86,6 +88,7 @@ function ActorModal({ actorName }, { movie }) {
                     style={{ borderRadius: 15 }}
                     src="https://img.wavve.com/movieImg/MV_CW01/3/MV_CW01_CW0000011613.jpg"
                     loading="lazy"
+                    alt="영화제목"
                   />
                   <div>영화제목</div>
                 </CustomImageListItem>

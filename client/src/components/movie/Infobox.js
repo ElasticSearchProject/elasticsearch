@@ -3,18 +3,18 @@ import styled from 'styled-components';
 import Infotable from './Infotable';
 
 const CustomPaper = styled(Paper)`
-  width: 550px;
-  height: 380px;
+  width: 60%;
+  height: 100%;
   border-radius: 15px;
   border: 1px;
   margin: 10px;
   background-color: white;
 `;
 
-function Infobox({ movie }) {
+function Infobox() {
   return (
     <CustomPaper className="infobox" elevation={3}>
-      <Infotable movie={movie} />
+      <Infotable />
     </CustomPaper>
   );
 }

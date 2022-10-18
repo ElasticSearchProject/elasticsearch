@@ -1,59 +1,61 @@
-import { Box, List, ListItem, Button, Container } from '@mui/material';
+import { Box, List, ListItem, Divider } from '@mui/material';
 import styled from 'styled-components';
 import ActorModal from './Actormodal';
-import { useState, useEffect } from 'react';
 import DirectorModal from './Directormodal';
-import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import MovieStory from './MovieStory';
+import ActorList from './ActorList.json';
 
-const Wrapper = styled(Container)``;
 const CustomBox = styled(Box)`
   width: 100%;
-  height: 100%;
+  height: 400px;
   background-color: white;
+  border-radius: 15px;
 `;
 const Customdiv = styled.div`
-  max-height: 10%;
+  height: 8%;
   max-width: 80%;
+`;
+const Customdiv2 = styled.div`
+  height: 10%;
+  max-width: 80%;
+  margin: auto;
+  display: block;
+  text-align: center;
 `;
 const Navdiv = styled.div`
   display: flex;
   width: 7%;
 `;
 
-function Infotable({ movie }) {
-  const [actorName, setActorName] = useState([]);
-  const params = useParams();
-  useEffect(() => {
-    axios.get('https://jsonplaceholder.typicode.com/users').then(res => {
-      const actor = res.data.filter(actor => actor.id === parseInt(params.id));
+function Infotable() {
+  console.log(ActorList, typeof ActorList);
 
-      setActorName(...actor);
-    });
-  }, []);
-  console.log(actorName);
   return (
     <CustomBox>
+      <Customdiv2>상영상태 표시</Customdiv2>
+      <Divider />
       <List>
-        <ListItem>
-          <Customdiv>상영상태 표시</Customdiv>
-        </ListItem>
         <ListItem>
           <Navdiv>감독</Navdiv>
           <Customdiv>
             <DirectorModal />
           </Customdiv>
         </ListItem>
+        <Divider />
         <ListItem>
           <Navdiv>출연</Navdiv>
           <Customdiv>
-            <ActorModal actorName={actorName} />
+            <ActorModal actor={ActorList} />
           </Customdiv>
         </ListItem>
-        <ListItem>
+        <Divider />
+        <ListItem style={{ justifyContent: 'center' }}>
           <Navdiv>소개</Navdiv>
         </ListItem>
-        <ListItem>이곳은 스토리가 나올 구역입니다.</ListItem>
+        <Divider />
+        <ListItem>
+          <MovieStory />
+        </ListItem>
       </List>
     </CustomBox>
   );

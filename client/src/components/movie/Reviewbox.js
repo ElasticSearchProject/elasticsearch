@@ -60,6 +60,7 @@ function ReviewBox() {
     <Wrapper>
       <CustomPaper className="contentbox" elevation={3}>
         <Typography>Review Reply</Typography>
+        <Divider />
         <Grid item xl={6} md={3} xs={6}>
           <CustomList>
             {[1, 2, 3, 4, 5, 6].map((item, index) => (
@@ -84,6 +85,7 @@ function ReviewBox() {
                     }
                   />
                 </CustomListItem>
+                <Divider />
               </Link>
             ))}
             <CustomDivider component="div" />

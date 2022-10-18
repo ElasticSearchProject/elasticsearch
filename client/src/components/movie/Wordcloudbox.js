@@ -3,6 +3,7 @@ import styled from 'styled-components';
 const CustomSkeleton = styled(Skeleton)`
   width: 100%;
   height: 100%;
+  border-radius: 15px;
 `;
 const Wrapper = styled(Container)`
   width: 100%;

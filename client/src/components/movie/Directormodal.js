@@ -8,10 +8,8 @@ import {
   ImageListItem,
 } from '@mui/material';
 import { useState } from 'react';
-import { Link, Route } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { useParams } from 'react-router-dom';
-import Movie from '../../routes/Movie';
 
 const CustomImageList = styled(ImageList)`
   padding: 1rem;
@@ -40,10 +38,12 @@ const CustomImageListItem = styled(ImageListItem)`
     opacity: 0;
   }
 `;
-const CustomContainer = styled(Container)`
-  width: fit-content;
+const ModalHeader = styled(Container)`
+  width: 100%;
   padding: 1rem 0;
   height: 65px;
+  display: flex;
+  justify-content: center;
 `;
 const CustomBox = styled(Box)`
   position: absolute;
@@ -54,12 +54,11 @@ const CustomBox = styled(Box)`
   height: 550px;
   box-shadow: 24;
   background-color: white;
-  justify-content: center;
   padding: 4;
   border-radius: 15px;
   overflow-y: auto;
 `;
-
+const director = [' 자비에 돌란 '];
 function DirectorModal() {
   const [open, setOpen] = useState(false);
 
@@ -67,7 +66,7 @@ function DirectorModal() {
   const handleClose = () => setOpen(false);
   return (
     <div>
-      <Button onClick={handleOpen}>봉준호</Button>
+      <Button onClick={handleOpen}>{director}</Button>
       <Modal
         open={open}
         onClose={handleClose}
@@ -75,9 +74,9 @@ function DirectorModal() {
         aria-describedby="modal-modal-description"
       >
         <CustomBox>
-          <CustomContainer>
-            <Typography variant="h6">봉준호의 다른 작품</Typography>
-          </CustomContainer>
+          <ModalHeader>
+            <Typography variant="h5">{director.name}의 다른 작품</Typography>
+          </ModalHeader>
           <CustomImageList cols={5} rowHeight={220}>
             {[1, 2, 3, 4, 5].map(item => (
               <Link to={`/movie/${item}`}>
@@ -86,6 +85,7 @@ function DirectorModal() {
                     style={{ borderRadius: 15 }}
                     src="https://img.wavve.com/movieImg/MV_CW01/3/MV_CW01_CW0000011613.jpg"
                     loading="lazy"
+                    alt="영화제목"
                   />
                   <div>영화제목</div>
                 </CustomImageListItem>
