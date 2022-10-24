@@ -1,23 +1,21 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Container, Slider } from '@mui/material';
+import { Slider } from '@mui/material';
 import styled from 'styled-components';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
-const CustomBox = styled(Container)`
-  position: fixed;
-  left: 4%;
-  top: 10%;
-  width: 10vw;
-  min-width: 200px;
+const Wrapper = styled.div`
   border: 1px solid lightgray;
   border-radius: 10px;
-  padding: 10px 25px;
   box-shadow: 2px 2px 2px lightgray;
+  min-width: 200px;
+  width: 100%;
+  padding: 1rem;
+  margin: 1rem 0;
   & h1 {
-    margin: 10px 0;
     font-size: 1rem;
     font-weight: 600;
     color: gray;
+    margin-bottom: 1rem;
   }
   & span {
     font-size: small;
@@ -36,9 +34,35 @@ const CustomBox = styled(Container)`
   & .MuiSlider-valueLabelLabel {
     color: white;
   }
+
+  @media ${({ theme }) => theme.device.tablet} {
+    width: 50%;
+    height: 100%;
+    margin-right: 1rem;
+    padding: 1rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    & h1 {
+      margin-bottom: 1rem;
+      width: 100%;
+    }
+  }
+
+  @media ${({ theme }) => theme.device.mobile} {
+    width: 100%;
+    height: 50%;
+    margin: 0;
+    margin-bottom: 1rem;
+    padding: 1rem 1.5rem;
+    & h1 {
+      display: none;
+    }
+  }
 `;
 
-function ShowTime() {
+function ShowTime({ setSearchData, setPage }) {
   const [searchParams] = useSearchParams();
   const [value, setValue] = useState([0, 180]);
 
@@ -46,26 +70,43 @@ function ShowTime() {
   const sortType = searchParams.get('sort');
   const genreFilter = searchParams.get('genreFilter');
   const nationFlag = searchParams.get('nationFlag');
+  const openDateFilter = searchParams.get('openDateFilter');
 
   const navigation = useNavigate();
   const onChangeValue = useCallback(
     (event, newValue) => {
       setValue(newValue);
+      setSearchData({
+        movieData: {
+          movie: [],
+          genre: [],
+        },
+        isLoading: true,
+        hasMoreMovies: true,
+      });
+      setPage(1);
     },
-    [setValue],
+    [setValue, setSearchData, setPage],
   );
 
   useEffect(() => {
     navigation(
-      `/search?query=${query}&page=${1}&nationFlag=${nationFlag}&sort=${sortType}&genreFilter=${genreFilter}&showTimeFilter=${value}&size=${30}`,
+      `/search?query=${query}&nationFlag=${nationFlag}&sort=${sortType}&genreFilter=${genreFilter}&showTimeFilter=${value}&openDateFilter=${openDateFilter}&size=${5}`,
     );
-  }, [query, nationFlag, sortType, genreFilter, value, navigation]);
+  }, [
+    query,
+    nationFlag,
+    sortType,
+    genreFilter,
+    value,
+    navigation,
+    openDateFilter,
+  ]);
 
   return (
-    <CustomBox>
+    <Wrapper>
       <h1>Select Time</h1>
       <Slider
-        aria-label="Custom marks"
         defaultValue={0}
         step={30}
         max={180}
@@ -73,7 +114,7 @@ function ShowTime() {
         value={value}
         onChange={onChangeValue}
       />
-    </CustomBox>
+    </Wrapper>
   );
 }
 

@@ -10,6 +10,8 @@ import {
   ListItemAvatar,
   ListItemText,
   Typography,
+  Box,
+  Rating,
 } from '@mui/material';
 import { Link } from 'react-router-dom';
 
@@ -18,22 +20,18 @@ const CustomList = styled(List)`
 `;
 
 const CustomAvatarItem = styled(ListItemAvatar)`
-  margin: 0;
+  margin: 10px;
   margin-right: 10px;
   & div {
     width: 100%;
     height: 10vh;
     & img {
-      object-fit: cover;
     }
   }
 `;
 
 const CustomListItem = styled(ListItem)`
-  padding: 10px 0;
-  &:hover {
-    background-color: #cdcfd4;
-  }
+  padding: 10px;
 `;
 
 const CustomDivider = styled(Divider)`
@@ -53,6 +51,9 @@ const CustomPaper = styled(Paper)`
   border-radius: 15px;
   background-color: white;
   overflow-y: scroll;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 function ReviewBox() {
@@ -63,12 +64,9 @@ function ReviewBox() {
         <Divider />
         <Grid item xl={6} md={3} xs={6}>
           <CustomList>
-            {[1, 2, 3, 4, 5, 6].map((item, index) => (
-              <Link to={'/'}>
+            {[1, 2, 3, 4].map((item, index) => (
+              <>
                 <CustomListItem alignItems="flex-start">
-                  <CustomAvatarItem>
-                    <Avatar variant="square" alt="Remy Sharp" />
-                  </CustomAvatarItem>
                   <ListItemText
                     primary="닉네임"
                     secondary={
@@ -80,15 +78,15 @@ function ReviewBox() {
                         >
                           댓글 내용
                         </Typography>
-                        {`  시간`}
+                        <Typography variant="body2" color="text.primary">
+                          시간
+                        </Typography>
                       </>
                     }
                   />
                 </CustomListItem>
-                <Divider />
-              </Link>
+              </>
             ))}
-            <CustomDivider component="div" />
           </CustomList>
         </Grid>
       </CustomPaper>

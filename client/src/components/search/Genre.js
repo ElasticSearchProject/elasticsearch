@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import GenreButton from './GenreButton';
+import GenreSkeleton from './GenreSkeleton';
 
 const FilterContainer = styled.div`
   max-width: 100%;
-  margin: 20px 0;
+  margin: 0.8rem 0;
   padding: 0 10px;
   display: flex;
   flex-wrap: wrap;
@@ -27,18 +28,37 @@ const FilterContainer = styled.div`
   }
 `;
 
-function Genre({ genre, clickedGenre, setClickedGenre }) {
+function Genre({
+  genre,
+  clickedGenre,
+  setClickedGenre,
+  setSearchData,
+  setPage,
+  isLoading,
+}) {
   return (
-    <FilterContainer>
-      {genre.map((item, index) => (
-        <GenreButton
-          clickedGenre={clickedGenre}
-          setClickedGenre={setClickedGenre}
-          key={index}
-          item={item.key}
-        />
-      ))}
-    </FilterContainer>
+    <>
+      {isLoading ? (
+        <FilterContainer>
+          {new Array(5).fill(1).map((_, index) => (
+            <GenreSkeleton key={index} />
+          ))}
+        </FilterContainer>
+      ) : (
+        <FilterContainer>
+          {genre.map((item, index) => (
+            <GenreButton
+              clickedGenre={clickedGenre}
+              setClickedGenre={setClickedGenre}
+              key={index}
+              item={item.key}
+              setSearchData={setSearchData}
+              setPage={setPage}
+            />
+          ))}
+        </FilterContainer>
+      )}
+    </>
   );
 }
 

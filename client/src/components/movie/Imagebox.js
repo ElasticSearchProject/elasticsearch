@@ -1,23 +1,30 @@
-import { Paper } from '@mui/material';
 import styled from 'styled-components';
-import Posterimage from './Posterimage';
+import PosterImage from './PosterImage';
 
 const Wrapper = styled.div`
-  width: 40%;
-`;
-const CustomPaper = styled(Paper)`
-  height: 100%;
-  border-radius: 15px;
+  display: flex;
+  border-radius: 10px;
+  justify-content: center;
+  min-height: 290px;
+  align-items: center;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+    url(${props => props.url});
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+
+  @media ${({ theme }) => theme.device.smallTablet} {
+    width: 100%;
+    height: 30vh;
+  }
 `;
 
-function Imagebox() {
+function ImageBox({ url }) {
   return (
-    <Wrapper>
-      <CustomPaper elevation={3}>
-        <Posterimage />
-      </CustomPaper>
+    <Wrapper url={url}>
+      <PosterImage poster={url} />
     </Wrapper>
   );
 }
 
-export default Imagebox;
+export default ImageBox;

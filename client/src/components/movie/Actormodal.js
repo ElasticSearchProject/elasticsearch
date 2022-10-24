@@ -7,7 +7,6 @@ import {
   ImageList,
   ImageListItem,
 } from '@mui/material';
-import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
@@ -57,18 +56,26 @@ const CustomBox = styled(Box)`
   overflow-y: auto;
 `;
 
-function ActorModal({ actor }) {
+export const ScrollDiv = styled.div`
+  overflow-y: auto;
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 2px;
+    background: #ccc;
+  }
+`;
+
+function ActorModal() {
+  /**const id = useParams();*/
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   return (
     <div style={{ display: 'flex' }}>
       <Box>
-        {actor.map((actorName, part) => (
-          <Button onClick={handleOpen} key={part}>
-            {actorName.name}
-          </Button>
-        ))}
+        <Button onClick={handleOpen}>배우</Button>
       </Box>
       <Modal
         open={open}
@@ -78,7 +85,7 @@ function ActorModal({ actor }) {
       >
         <CustomBox>
           <CustomContainer>
-            <Typography variant="h6">{actor.name}의 다른 작품</Typography>
+            <Typography variant="h6">배우의 다른 작품</Typography>
           </CustomContainer>
           <CustomImageList cols={5} rowHeight={220}>
             {[1, 2, 3, 4, 5].map(item => (

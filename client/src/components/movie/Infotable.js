@@ -1,64 +1,144 @@
-import { Box, List, ListItem, Divider } from '@mui/material';
+import {
+  Box,
+  List,
+  ListItem,
+  Button,
+  Container,
+  Rating,
+  Divider,
+} from '@mui/material';
 import styled from 'styled-components';
 import ActorModal from './Actormodal';
 import DirectorModal from './Directormodal';
 import MovieStory from './MovieStory';
 import ActorList from './ActorList.json';
 
-const CustomBox = styled(Box)`
-  width: 100%;
-  height: 400px;
-  background-color: white;
-  border-radius: 15px;
+const Wrapper = styled(Container)`
+  margin: 1rem 0;
+  font-size: 0.9rem;
 `;
-const Customdiv = styled.div`
-  height: 8%;
-  max-width: 80%;
-`;
-const Customdiv2 = styled.div`
-  height: 10%;
-  max-width: 80%;
-  margin: auto;
-  display: block;
-  text-align: center;
-`;
-const Navdiv = styled.div`
+
+const Title = styled.div`
   display: flex;
-  width: 7%;
+  font-weight: 600;
+  & h1 {
+    margin-right: 10px;
+    font-size: 1.2rem;
+  }
+  & h2 {
+    color: gray;
+  }
 `;
 
-function Infotable() {
-  console.log(ActorList, typeof ActorList);
+const SubInfo = styled.div`
+  display: flex;
+  align-items: center;
+  margin: 0.5rem 0;
+  width: 100%;
 
+  & div {
+    display: flex;
+    align-items: center;
+    color: gray;
+    margin-right: 10px;
+  }
+
+  & div:first-child {
+    & svg {
+      width: 15px;
+      height: 15px;
+      margin-right: 5px;
+      fill: #d99204;
+    }
+  }
+`;
+
+const Genre = styled.div`
+  display: flex;
+  color: gray;
+  margin: 0.5rem 0;
+  & div {
+    margin-right: 5px;
+  }
+`;
+
+const MainInfo = styled.div`
+  margin-top: 1rem;
+`;
+
+const Director = styled.div`
+  display: flex;
+  align-items: center;
+  & h1 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-right: 5px;
+  }
+
+  & div {
+    color: gray;
+    margin-right: 5px;
+  }
+`;
+
+const Actor = styled.div`
+  display: flex;
+  align-items: center;
+  & h1 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-right: 5px;
+  }
+
+  & div {
+    color: gray;
+    margin-right: 5px;
+  }
+`;
+
+function InfoTable({ movie }) {
+  console.log(Math.floor(movie.score_avg / 2));
+  console.log(movie);
   return (
-    <CustomBox>
-      <Customdiv2>상영상태 표시</Customdiv2>
+    <Wrapper>
+      <Title>
+        <h1>{movie.h_movie}</h1>
+        <h2>| {movie.h_movie2}</h2>
+      </Title>
+      <SubInfo>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
+            <path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z" />
+          </svg>
+          {movie.score_avg ? movie.score_avg.toFixed(2) : '0'} |
+        </div>
+
+        <div>{movie.opening_date} |</div>
+        <div>{movie.show_time} 분 |</div>
+        {movie.nation && <div>{movie.nation[0]} </div>}
+      </SubInfo>
+      <Genre>
+        {movie.genre
+          ? movie.genre.map((item, index) => <div key={index}>| {item} </div>)
+          : null}
+      </Genre>
       <Divider />
-      <List>
-        <ListItem>
-          <Navdiv>감독</Navdiv>
-          <Customdiv>
-            <DirectorModal />
-          </Customdiv>
-        </ListItem>
-        <Divider />
-        <ListItem>
-          <Navdiv>출연</Navdiv>
-          <Customdiv>
-            <ActorModal actor={ActorList} />
-          </Customdiv>
-        </ListItem>
-        <Divider />
-        <ListItem style={{ justifyContent: 'center' }}>
-          <Navdiv>소개</Navdiv>
-        </ListItem>
-        <Divider />
-        <ListItem>
-          <MovieStory />
-        </ListItem>
-      </List>
-    </CustomBox>
+      <MainInfo>
+        <Director>
+          <h1>감독</h1>
+          {movie.movie_director ? <div>{movie.movie_director}</div> : null}
+        </Director>
+        <Actor>
+          <h1>출연</h1>
+          {movie.movie_actor
+            ? movie.movie_actor
+                .filter(item => item.part !== '조연')
+                .map((item, index) => <div key={index}>{item.name}</div>)
+            : null}
+        </Actor>
+      </MainInfo>
+    </Wrapper>
   );
 }
 
-export default Infotable;
+export default InfoTable;

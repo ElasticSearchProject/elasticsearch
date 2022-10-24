@@ -4,19 +4,14 @@ import styled from 'styled-components';
 import GenreButton from './GenreButton';
 
 const Wrapper = styled(Container)`
-  width: 10vw;
   min-width: 200px;
+  margin-bottom: 1rem;
   height: fit-content;
   background-color: white;
   border: 1px solid lightgray;
   border-radius: 10px;
   box-shadow: 2px 2px 5px lightgray;
   padding: 10px;
-  position: fixed;
-  z-index: 1000;
-  left: 4%;
-  top: 20%;
-
   opacity: ${props => (props.scroll ? '1' : '0')};
   visibility: ${props => (props.scroll ? '' : 'hidden')};
   transition: ${props =>
@@ -24,7 +19,7 @@ const Wrapper = styled(Container)`
       ? 'all 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms'
       : 'all 195ms cubic-bezier(0.4, 0, 0.2, 1) 0ms'};
 
-  @media screen and (max-width: 900px) {
+  @media ${({ theme }) => theme.device.tablet} {
     display: none;
   }
 `;
@@ -45,7 +40,13 @@ const CustomGridItem = styled(Grid)`
   height: 15%;
 `;
 
-function FloatingGenre({ genre, clickedGenre, setClickedGenre }) {
+function FloatingGenre({
+  genre,
+  clickedGenre,
+  setClickedGenre,
+  setSearchData,
+  setPage,
+}) {
   const [scroll, setScroll] = useState(false);
 
   useEffect(() => {
@@ -74,6 +75,8 @@ function FloatingGenre({ genre, clickedGenre, setClickedGenre }) {
               setClickedGenre={setClickedGenre}
               key={index}
               item={item.key}
+              setSearchData={setSearchData}
+              setPage={setPage}
             />
           </CustomGridItem>
         ))}

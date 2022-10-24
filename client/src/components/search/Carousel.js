@@ -5,12 +5,13 @@ import 'slick-carousel/slick/slick-theme.css';
 import styled from 'styled-components';
 import PrevArrow from './PrevArrow';
 import NextArrow from './NextArrow';
-import { padding } from '@mui/system';
-import Link from '@mui/material/Link';
+import { Link } from 'react-router-dom';
 
 const Wrapper = styled.div`
   display: flex;
+  flex-direction: column;
   justify-content: center;
+  align-items: center;
   margin: 1rem 0;
 `;
 
@@ -18,55 +19,123 @@ const CustomSlicer = styled(Slider)`
   width: 95%;
 `;
 
-const ImageBox = styled.div`
-  height: 24vh;
-  padding: 10px;
-  background-color: gray;
-  justify-content: center;
+const Header = styled.h1`
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  margin-left: 1rem;
+  align-self: flex-start;
 `;
 
-const ImageStyle = {
-  height: "22vh",
-  margin:"auto"
-}
+const ImageBox = styled.div`
+  height: 25vh;
+  width: 100%;
+  min-width: 90px;
 
-function Carousel() {
+  & a {
+    position: relative;
+    &:hover {
+      & img {
+        filter: brightness(0.3);
+      }
+      & div {
+        display: flex;
+      }
+    }
+  }
+`;
+
+const Image = styled.img`
+  height: 100%;
+  width: 100%;
+  object-fit: fill;
+  transition: all 0.4s linear;
+`;
+
+const MovieTitle = styled.div`
+  font-weight: 600;
+  text-align: center;
+  display: none;
+  color: white;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+`;
+
+function Carousel({ title, movies }) {
   const settings = {
     dots: false,
     infinite: true,
     slidesToShow: 5,
     slidesToScroll: 5,
-    autoplaySpeed: 1000,
+    autoplaySpeed: 3000,
+    autoplay: true,
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
+    responsive: [
+      {
+        breakpoint: 900,
+        settings: {
+          slidesToShow: 4,
+          slidesToScroll: 4,
+          infinite: true,
+          dots: false,
+        },
+      },
+      {
+        breakpoint: 800,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 3,
+          infinite: true,
+          dots: true,
+        },
+      },
+      {
+        breakpoint: 500,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 2,
+          infinite: true,
+          dots: true,
+        },
+      },
+      {
+        breakpoint: 375,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+          infinite: true,
+          dots: true,
+        },
+      },
+    ],
   };
 
-  const ImageLists=[
-    {src:"https://movie-phinf.pstatic.net/20220930_90/1664503344646CtlxN_JPEG/movie_image.jpg", link:"https://movie.naver.com/movie/bi/mi/basic.naver?code=219812"},
-    {src:"https://movie-phinf.pstatic.net/20220928_85/1664332929020nYWPc_JPEG/movie_image.jpg", link:"#"},
-    {src:"https://movie-phinf.pstatic.net/20221004_281/1664859354607lkMYs_JPEG/movie_image.jpg", link:"#"},
-    {src:"https://movie-phinf.pstatic.net/20220906_136/1662449769362fWpdE_JPEG/movie_image.jpg", link:"#"},
-    {src:"https://movie-phinf.pstatic.net/20220929_135/1664441921246ae2RC_JPEG/movie_image.jpg", link:"#"},
-    {src:"https://movie-phinf.pstatic.net/20220824_252/1661324514413czYBf_JPEG/movie_image.jpg", link:"#"},
-    {src:"https://movie-phinf.pstatic.net/20220921_197/1663737442956Ugu4T_JPEG/movie_image.jpg", link:"#"},
-    {src:"https://movie-phinf.pstatic.net/20220805_227/1659685387586PIORG_JPEG/movie_image.jpg", link:"#"},
-    {src:"https://movie-phinf.pstatic.net/20220826_188/1661489945659Su2RI_JPEG/movie_image.jpg", link:"#"},
-    {src:"https://movie-phinf.pstatic.net/20190724_161/1563931152464tk11A_JPEG/movie_image.jpg", link:"#"},
-  ];
-
-
   return (
-    <Wrapper>
-      <CustomSlicer {...settings}>
-        {ImageLists.map((image, index) => (
-          <ImageBox>
-            <a href = {image.link}>
-              <img src={image.src} key={index} style={ImageStyle}/>
-            </a>
-          </ImageBox>
-         ))}
-      </CustomSlicer>
-    </Wrapper>
+    <>
+      <Wrapper>
+        <Header>{title}</Header>
+        <CustomSlicer {...settings}>
+          {movies.map(item => (
+            <ImageBox key={item.movie_id}>
+              <Link to={`/movie/${item.movie_id}`}>
+                <Image
+                  src={
+                    item.movie_poster !== ''
+                      ? item.movie_poster
+                      : '/Noimage.jpeg'
+                  }
+                  alt="poster"
+                />
+                <MovieTitle>{item.h_movie}</MovieTitle>
+              </Link>
+            </ImageBox>
+          ))}
+        </CustomSlicer>
+      </Wrapper>
+    </>
   );
 }
 

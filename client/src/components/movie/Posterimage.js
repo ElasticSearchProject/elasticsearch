@@ -1,24 +1,18 @@
 import styled from 'styled-components';
 
-const Box = styled.div`
-  height: 50vh;
-  margin: 15px;
+const Image = styled.img`
+  object-fit: cover;
+  border-radius: 10px;
+  image-rendering: auto;
 
-  & img {
-    width: 75%;
-    height: 100%;
-    margin: auto;
-    display: block;
-    border-radius: 15px;
+  @media ${({ theme }) => theme.device.smallTablet} {
+    object-fit: cover;
+    height: 90%;
   }
 `;
 
-function Posterimage() {
-  return (
-    <Box>
-      <img src="https://movie-phinf.pstatic.net/20200707_140/1594088533585ADVHN_JPEG/movie_image.jpg?type=m203_290_2" />
-    </Box>
-  );
+function PosterImage({ poster }) {
+  return <Image src={poster} alt="poster" />;
 }
 
-export default Posterimage;
+export default PosterImage;

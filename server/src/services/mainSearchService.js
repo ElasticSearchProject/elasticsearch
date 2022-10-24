@@ -2,7 +2,7 @@ import es from '../lib/elasticsearch.js';
 import common from '../static/commonStatic.js';
 import esb from 'elastic-builder';
 
-export default async function getMoives(queryParams, callback) {
+export default async function getMovies(queryParams, callback) {
   let query = queryParams.query;
   let size = typeof queryParams.size !== 'undefined' ? queryParams.size : 10;
   let page = typeof queryParams.page !== 'undefined' ? queryParams.page : 1;
@@ -20,16 +20,25 @@ export default async function getMoives(queryParams, callback) {
   let showTimeFilter = queryParams.showTimeFilter;
   let openDateFilter = queryParams.openDateFilter;
 
+
+  //poster script query
+  const scriptQuery = esb.scriptQuery(
+    esb.script()
+      .lang('painless')
+      .inline('int poster = doc["movie_poster.keyword"].value.length();return poster > 0;')
+  );
+
   //상단 영화 고정
   const topBoolQuery = new esb.boolQuery();
-  topBoolQuery.must([esb.matchAllQuery(), esb.existsQuery('movie_poster')]);
+  topBoolQuery.must([esb.matchAllQuery(), esb.existsQuery('movie_poster')])
+              .filter(scriptQuery)
 
   //평점순
   const requestTopScoreBody = new esb.requestBodySearch();
   const topScoreData = requestTopScoreBody
     .query(topBoolQuery)
     .sort(esb.sort('score_avg', 'desc'))
-    .size(5)
+    .size(10)
     .toJSON();
 
   const topScoreResponse = await es.search({
@@ -53,7 +62,7 @@ export default async function getMoives(queryParams, callback) {
   const topOpenData = requestTopOpenBody
     .query(topBoolQuery)
     .sort(esb.sort('opening_date', 'desc'))
-    .size(5)
+    .size(10)
     .toJSON();
 
   const topOpenResponse = await es.search({
