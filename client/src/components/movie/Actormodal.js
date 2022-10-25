@@ -68,7 +68,6 @@ export const ScrollDiv = styled.div`
 `;
 
 function ActorModal() {
-  /**const id = useParams();*/
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);

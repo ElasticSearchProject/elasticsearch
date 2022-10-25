@@ -11,7 +11,6 @@ import styled from 'styled-components';
 import ActorModal from './Actormodal';
 import DirectorModal from './Directormodal';
 import MovieStory from './MovieStory';
-import ActorList from './ActorList.json';
 
 const Wrapper = styled(Container)`
   margin: 1rem 0;
@@ -128,6 +127,7 @@ function InfoTable({ movie }) {
           <h1>감독</h1>
           {movie.movie_director ? <div>{movie.movie_director}</div> : null}
         </Director>
+        <Divider />
         <Actor>
           <h1>출연</h1>
           {movie.movie_actor

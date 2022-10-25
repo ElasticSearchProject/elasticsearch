@@ -8,8 +8,8 @@ import Layout from '../components/common/Layout';
 import FloatingButton from '../components/search/FloatingButton';
 import { useState, useEffect } from 'react';
 import InfoBox from '../components/movie/InfoBox';
-
 import axios from 'axios';
+import { useParams } from 'react-router-dom';
 
 const Wrapper = styled(Container)`
   display: flex;
@@ -63,14 +63,3 @@ function Movie() {
 }
 
 export default Movie;
-
-/*const [movie, setMovie] = useState([]);
-  const params = useParams();
-
-  useEffect(() => {
-    axios.get('https://jsonplaceholder.typicode.com/photos').then(res => {
-      const item = res.data.filter(item => item.id === parseInt(params.id));
-
-      setMovie(...item);
-    });
-  }, []);*/
