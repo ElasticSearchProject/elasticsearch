@@ -53,8 +53,8 @@ function Movie() {
             <ImageBox url={movieData.movie.movie_poster} />
             <InfoBox movie={movieData.movie} />
           </Header>
-          <ReviewBox />
-          <WordCloudBox />
+          {/* <ReviewBox /> */}
+          {/* <WordCloudBox /> */}
           <FloatingButton />
         </Wrapper>
       </Layout>
