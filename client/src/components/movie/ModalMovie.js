@@ -3,10 +3,15 @@ import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import axios from 'axios';
+import GenreChart from './GenreChart';
+import NoResult from './NoResult';
+import LoadingSpinner from '../common/LoadingSpinner';
 
 const Image = styled.img`
   height: 90%;
   width: 100%;
+  min-width: max-content;
+  min-height: max-content;
   background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
     url(${props => props.url});
   border-radius: 10px;
@@ -38,10 +43,12 @@ const CustomBox = styled(Box)`
   top: 50%;
   left: 50%;
   width: 50vw;
-  height: 60vh;
+  height: 80vh;
   background-color: lightgray;
   padding: 1rem;
   border-radius: 15px;
+  min-height: 500px;
+  min-width: 400px;
   &:focus {
     outline: none;
   }
@@ -50,14 +57,13 @@ const CustomBox = styled(Box)`
     font-size: 1.2rem;
   }
   @media ${({ theme }) => theme.device.tablet} {
-    width: 80vw;
     height: 70vh;
   }
 `;
 
 const CustomGridContainer = styled(Grid)`
   width: 100%;
-  height: 95%;
+  height: 90%;
   margin-top: 0.8rem;
   overflow-y: auto;
   ::-webkit-scrollbar {
@@ -107,19 +113,33 @@ function ModalMovie({ handleClose, open, clickedData }) {
     isLoading: true,
   });
   useEffect(() => {
-    axios
-      .post('/api/search/group', {
-        group: clickedData.group,
-        name: clickedData.name,
-      })
-      .then(res =>
-        setModalData({
-          genre: [...res.data.genre],
-          movie: [...res.data.movie],
-          isLoading: false,
-        }),
-      );
-  }, [clickedData]);
+    if (open) {
+      axios
+        .post('/api/search/group', {
+          group: clickedData.group,
+          name: clickedData.name,
+          movie_id: params.id,
+        })
+        .then(res => {
+          const movies = res.data.movie.filter(
+            movie => movie.movie_id !== params.id,
+          );
+
+          setModalData({
+            genre: [...res.data.genre],
+            movie: [...movies],
+            isLoading: false,
+          });
+        });
+    } else {
+      setModalData({
+        genre: [],
+        movie: [],
+        isLoading: true,
+      });
+    }
+  }, [clickedData, open]);
+
   return (
     <>
       <Modal open={open} onClose={handleClose}>
@@ -128,21 +148,34 @@ function ModalMovie({ handleClose, open, clickedData }) {
             <h1>{clickedData.name}</h1>
             <div>의 다른 영화</div>
           </Title>
-
-          <CustomGridContainer container spacing={1}>
-            {modalData.movie
-              .filter(item => item.movie_id !== params.id)
-              .map(item => (
-                <CustomGridItem key={item.movie_id} item xs={6} md={4}>
-                  <Link to={`/movie/${item.movie_id}`}>
-                    <div>
-                      <Image src={item.movie_poster} url={item.movie_poster} />
-                      <p>{item.h_movie}</p>
-                    </div>
-                  </Link>
-                </CustomGridItem>
-              ))}
-          </CustomGridContainer>
+          {!modalData.isLoading ? (
+            <>
+              {modalData.movie.length > 0 ? (
+                <CustomGridContainer container spacing={1}>
+                  {modalData.movie.map(item => (
+                    <CustomGridItem key={item.movie_id} item xs={6} md={4}>
+                      <Link to={`/movie/${item.movie_id}`}>
+                        <div>
+                          <Image
+                            src={item.movie_poster}
+                            url={item.movie_poster}
+                          />
+                          <p>{item.h_movie}</p>
+                        </div>
+                      </Link>
+                    </CustomGridItem>
+                  ))}
+                </CustomGridContainer>
+              ) : (
+                <NoResult />
+              )}
+              {modalData.movie.length > 0 ? (
+                <GenreChart genre={modalData.genre} />
+              ) : null}
+            </>
+          ) : (
+            <LoadingSpinner />
+          )}
         </CustomBox>
       </Modal>
     </>
