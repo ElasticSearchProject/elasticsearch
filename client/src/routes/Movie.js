@@ -1,9 +1,9 @@
 import React from 'react';
 import { Container } from '@mui/material';
 import styled from 'styled-components';
-import ReviewBox from '../components/movie/Reviewbox';
+import ReviewBox from '../components/movie/ReviewBox';
 import ImageBox from '../components/movie/ImageBox';
-import WordCloudBox from '../components/movie/Wordcloudbox';
+import WordCloudBox from '../components/movie/WordCloudBox';
 import Layout from '../components/common/Layout';
 import FloatingButton from '../components/search/FloatingButton';
 import { useState, useEffect } from 'react';
@@ -29,10 +29,25 @@ const Header = styled(Container)`
   }
 `;
 
+const Body = styled(Container)`
+  display: flex;
+  align-items: center;
+  margin: 2rem 0;
+  margin-top: 3rem;
+  height: 30vh;
+
+  @media ${({ theme }) => theme.device.smallTablet} {
+    flex-direction: column;
+    height: 60vh;
+    margin-top: 1rem;
+  }
+`;
+
 function Movie() {
   const { id } = useParams();
   const [movieData, setMovieData] = useState({
     movie: {},
+    wordCloud: [],
     isLoading: true,
   });
 
@@ -40,6 +55,7 @@ function Movie() {
     axios.get(`/api/search/movie?movie_id=${id}`).then(res =>
       setMovieData({
         movie: { ...res.data.movie },
+        wordCloud: [...res.data.word_cloud],
         isLoading: false,
       }),
     );
@@ -54,9 +70,11 @@ function Movie() {
             <InfoBox movie={movieData.movie} />
           </Header>
 
-          {/* <ReviewBox /> */}
-          {/* <WordCloudBox /> */}
-          <FloatingButton />
+          {/* <ReviewBox />*/}
+          <Body>
+            <WordCloudBox wordCloud={movieData.wordCloud} />
+          </Body>
+          {/* <FloatingButton /> */}
         </Wrapper>
       </Layout>
     </>

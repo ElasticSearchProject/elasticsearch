@@ -23,23 +23,39 @@ export default async function getMovie(queryParams, callback) {
 
     //graph
     const movieMap = hit._source;
+    const genreFlag = typeof movieMap['genre'] === 'undefined' ? false : true;
+    const nationFlag = typeof movieMap['nation'] === 'undefined' ? false : true;
+    const actorFlag =
+        typeof movieMap['movie_actor']['name'] === 'undefined' ? false : true;
+    const directorFlag =
+        typeof movieMap['movie_director'] === 'undefined' ? false : true;
+
     const groupNodeList = [
-        { key: 'genre', field: 'genre', nested: false, type: 'Array' },
-        { key: 'nation', field: 'nation', nested: false, type: 'Array' },
-        {
-            key: 'actor',
-            field: 'movie_actor.name',
-            nested: true,
-            nested_field: 'movie_actor',
-            type: 'Array'
-        },
-        {
-            key: 'director',
-            field: 'movie_director',
-            nested: false,
-            type: 'String'
-        }
+        genreFlag
+            ? { key: 'genre', field: 'genre', nested: false, type: 'Array' }
+            : null,
+        nationFlag
+            ? { key: 'nation', field: 'nation', nested: false, type: 'Array' }
+            : null,
+        actorFlag
+            ? {
+                  key: 'actor',
+                  field: 'movie_actor.name',
+                  nested: true,
+                  nested_field: 'movie_actor',
+                  type: 'Array'
+              }
+            : null,
+        directorFlag
+            ? {
+                  key: 'director',
+                  field: 'movie_director',
+                  nested: false,
+                  type: 'String'
+              }
+            : null
     ];
+
     const graph = await getMovieGraph(movieMap, groupNodeList);
     const wordCloud = await movieWordCloud(queryParams);
 
@@ -63,6 +79,9 @@ async function getMovieGraph(movieMap, groupNodeList) {
 
     for (const groupNode of groupNodeList) {
         //2depth
+        if (!groupNode) {
+            continue;
+        }
         nodes.push({
             id: groupNode['key'],
             label: groupNode['key'],
@@ -88,13 +107,17 @@ async function getMovieGraph(movieMap, groupNodeList) {
                 ? [movieMap[mapField]]
                 : movieMap[mapField];
 
-        const result = await findMovieByGroup(
-            groupNode['key'],
-            groupList,
-            groupNode['field'],
-            groupNode['nested'],
-            groupNode['nested_field']
-        );
+        let result = [];
+
+        if (groupList.length > 0) {
+            result = await findMovieByGroup(
+                groupNode['key'],
+                groupList,
+                groupNode['field'],
+                groupNode['nested'],
+                groupNode['nested_field']
+            );
+        }
 
         for (const group of result) {
             //3depth
@@ -129,7 +152,6 @@ async function findMovieByGroup(
     nestedField
 ) {
     const groupKeyList = [];
-
     for (const group of groupList) {
         if (groupName === 'actor') {
             if (group['part'] === '주연') {
@@ -170,16 +192,11 @@ async function groupListSearchByMultiSearch(
             .query(requestQuery)
             .agg(
                 esb
-                    .termsAggregation(group, 'h_movie3.keyword')
+                    .termsAggregation(group, 'h_movie3')
                     .agg(
                         esb
-                            .termsAggregation(group, 'movie_id.keyword')
-                            .agg(
-                                esb.termsAggregation(
-                                    group,
-                                    'movie_poster.keyword'
-                                )
-                            )
+                            .termsAggregation(group, 'movie_id')
+                            .agg(esb.termsAggregation(group, 'movie_poster'))
                     )
             )
             .toJSON();
@@ -256,11 +273,18 @@ async function movieWordCloud(queryParams) {
     const wordCloud = response.body.hits.hits[0]._source.word_cloud;
     const wordMapList = [];
 
+    let valueFlag = false;
+
+    if (wordCloud.length < 800) {
+        valueFlag = true;
+    }
     for (const word of wordCloud) {
         const wordMap = {};
         const wordData = word.split('__');
         wordMap['word'] = wordData[0];
-        wordMap['value'] = wordData[1];
+        wordMap['value'] = !valueFlag
+            ? wordData[1]
+            : String(parseInt(wordData[1]) + 50);
         wordMapList.push(wordMap);
     }
 
