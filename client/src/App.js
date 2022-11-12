@@ -5,7 +5,7 @@ import GlobalFont from './fonts/fonts';
 import { ThemeProvider } from 'styled-components';
 import theme from './styles/theme';
 
-axios.defaults.baseURL = process.env.REACT_APP_SERVER_URL;
+// axios.defaults.baseURL = process.env.REACT_APP_SERVER_URL;
 
 function App() {
   return (

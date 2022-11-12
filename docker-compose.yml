@@ -1,5 +1,37 @@
-version: "3.3"
+version: "3"
 services:
+  app_client:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./client
+    container_name: app_client
+    volumes:
+      - /app/node_modules
+      - ./client:/app
+    stdin_open: true
+
+  nginx:
+    depends_on:
+      - app_server
+      - app_client
+    restart: always
+    build:
+      dockerfile: Dockerfile
+      context: ./nginx
+    ports:
+      - "3000:80"
+
+  app_server:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./server
+    container_name: app_server
+    links:
+      - elasticsearch
+    volumes:
+      - /app/node_modules
+      - ./server:/app
+
   elasticsearch:
     init: true
     container_name: elasticsearch
@@ -15,15 +47,7 @@ services:
     ports:
       - "9200:9200"
       - "9300:9300"
+
     environment:
       ES_JAVA_OPTS: -Xms256m -Xmx256m
       discovery.type: single-node
-    networks:
-      - elk
-
-networks:
-  elk:
-    driver: bridge
-
-volumes:
-  elasticsearch:
