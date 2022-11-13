@@ -31,7 +31,7 @@ function Home() {
   useEffect(() => {
     const nums = randomNum();
 
-    axios.get('api/search/genre').then(res => {
+    axios.get('/api/search/genre').then(res => {
       const movies = [];
       nums.map(num => movies.push(res.data[num]));
       setMovieDatas({
