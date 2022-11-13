@@ -1,7 +1,7 @@
 version: "3"
 services:
   app_client:
-    image: jungyu333/docker-frontend
+    image: jungyu333/docker-client
     container_name: app_client
     volumes:
       - /app/node_modules
@@ -10,16 +10,13 @@ services:
     mem_limit: 128m
 
   nginx:
-    depends_on:
-      - app_server
-      - app_client
     restart: always
     image: jungyu333/docker-nginx
     ports:
       - "80:80"
 
   app_server:
-    image: jungyu333/docker-backend
+    image: jungyu333/docker-server
     container_name: app_server
     links:
       - elasticsearch
