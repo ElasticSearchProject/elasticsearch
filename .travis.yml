@@ -18,7 +18,6 @@ after_success:
 
   - echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_ID" --password-stdin
 
-  -docker push jungyu333/docker-client
-  -docker push jungyu333/docker-server
-  -docker push jungyu333/docker-nginx
-  
+  - docker push jungyu333/docker-client
+  - docker push jungyu333/docker-server
+  - docker push jungyu333/docker-nginx
