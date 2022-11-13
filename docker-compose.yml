@@ -26,21 +26,16 @@ services:
     mem_limit: 128m
 
   elasticsearch:
-  init: true
-  container_name: elasticsearch
-  expose:
-    - "9200"
-  build:
-    context: elasticsearch/
-    args:
-      ELK_VERSION: ${ELK_VERSION}
-  volumes:
-    - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro,z
-
-  ports:
-    - "9200:9200"
-    - "9300:9300"
-
-  environment:
-    ES_JAVA_OPTS: -Xms256m -Xmx256m
-    discovery.type: single-node
+    init: true
+    image: jungyu333/docker-elasticsearch
+    container_name: elasticsearch
+    expose:
+      - "9200"
+    volumes:
+      - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro,z
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      ES_JAVA_OPTS: -Xms256m -Xmx256m
+      discovery.type: single-node
