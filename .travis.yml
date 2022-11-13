@@ -21,3 +21,16 @@ after_success:
   - docker push jungyu333/docker-client
   - docker push jungyu333/docker-server
   - docker push jungyu333/docker-nginx
+
+deploy:
+  provider: elasticbeanstalk
+  region: "ap-northeast-2"
+  app: "elasticsearch"
+  env: "Elasticsearch-env"
+  bucket_name: elasticbeanstalk-ap-northeast-2-506770882334
+  bucket_path: "elasticsearch"
+  on:
+    branch: main
+
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_ACCESS_KEY
