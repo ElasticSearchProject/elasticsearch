@@ -15,12 +15,14 @@ after_success:
   - docker build -t jungyu333/docker-client ./client
   - docker build -t jungyu333/docker-server ./server
   - docker build -t jungyu333/docker-nginx  ./nginx
+  - docker build -t jungyu333/docker-elasticsearch  ./elasticsearch
 
   - echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_ID" --password-stdin
 
   - docker push jungyu333/docker-client
   - docker push jungyu333/docker-server
   - docker push jungyu333/docker-nginx
+  - docker push jungyu333/docker-elasticsearch
 
 deploy:
   edge: true
