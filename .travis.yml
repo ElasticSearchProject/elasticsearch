@@ -23,6 +23,7 @@ after_success:
   - docker push jungyu333/docker-nginx
 
 deploy:
+  edge: true
   provider: elasticbeanstalk
   region: "ap-northeast-2"
   app: "elasticsearch"
