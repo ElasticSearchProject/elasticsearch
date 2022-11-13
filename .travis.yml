@@ -6,10 +6,10 @@ services:
   - docker
 
 before_install:
-  - docker build -t ElasticSearchProject/elasticsearch -f ./client/Dockerfile.dev ./client
+  - docker build -t jungyu333/elasticsearch -f ./client/Dockerfile.dev ./client
 
 script:
-  - docker run -e CI=true ElasticSearchProject/elasticsearch npm run test
+  - docker run -e CI=true jungyu333/elasticsearch npm run test
 
 after_success:
   - docker build -t jungyu333/docker-client ./client
